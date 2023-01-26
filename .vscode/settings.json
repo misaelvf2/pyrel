@@ -1,6 +1,9 @@
 {
-    "python.pythonPath": ".venv/bin/python3.11",
+    "python.pythonPath": "/home/misaelvf2/pyrel/.venv/bin/python",
     "python.linting.banditEnabled": false,
     "python.linting.flake8Enabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "python.analysis.extraPaths": [
+        "./pyrel"
+    ]
 }

@@ -1,41 +1,37 @@
-from typing import Any, Callable, Iterator, Set
+from typing import Any, Callable, Iterable
 
 
 class BinaryRelation:
     def __init__(
         self,
-        relation: Set[tuple[Any, Any]] | Iterator[tuple[Any, Any]] | None = None,
+        relation: Iterable[tuple[Any, Any]] | None = None,
         from_function: bool = False,
-        domain: Set[Any] = None,
-        function: Callable[[Any], Any] = None,
+        domain: Iterable[Any] | None = None,
+        function: Callable[[Any], Any] | None = None,
     ) -> None:
+        self._relation = relation
+
         if from_function:
             if domain is None or function is None:
                 raise ValueError
-            self._relation = self.from_function(domain=domain, function=function)
-        else:
-            self._relation = relation
-
-    def from_function(
-        self, domain: Set[Any], function: Callable[[Any], Any]
-    ) -> Iterator[tuple[Any, Any]]:
-        return zip(domain, map(function, domain))
+            self._domain = domain
+            self._function = function
+        self._from_function = from_function
 
     @property
-    def relation(self) -> Set[tuple[Any, Any]] | None:
-        if isinstance(self._relation, set):
-            return self._relation
+    def relation(self) -> Iterable[tuple[Any, Any]] | None:
+        return self._relation
 
-    def __iter__(self) -> Iterator[tuple[Any, Any]]:
-        if self._relation is not None:
-            for elem in self._relation:
-                yield elem
+    def elements(self) -> tuple[Any, Any]:
+        if self._from_function:
+            for x in self._domain:
+                yield (x, self._function(x))
+        else:
+            if self._relation:
+                for pair in self._relation:
+                    yield pair
 
     def __contains__(self, item) -> bool:
-        # TODO: Rework this so that the entire generator does not get consumed.
         if self._relation is None:
             return False
-        if isinstance(self._relation, set):
-            return item in self._relation
-        pairs = {pair for pair in self._relation}
-        return item in pairs
+        return item in self._relation

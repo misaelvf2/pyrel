@@ -39,7 +39,11 @@ class BinaryRelation:
         return True
 
     def is_symmetric(self):
-        return False
+        if self._domain is not None and self._relation is not None:
+            for a, b in self._relation:
+                if (b, a) not in self._relation:
+                    return False
+        return True
 
     def is_transitive(self):
         return False

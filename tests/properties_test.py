@@ -34,9 +34,12 @@ def test_symmetric():
     a_set = [i for i in range(10)]
 
     r1 = BinaryRelation(
-        relation=[(a, b) for a in a_set for b in a_set if a == b or a == -b]
+        relation=[(a, b) for a in a_set for b in a_set if a == b or a == -b],
+        domain=a_set,
     )
-    r2 = BinaryRelation(relation=[(a, b) for a in a_set for b in a_set if a <= b])
+    r2 = BinaryRelation(
+        relation=[(a, b) for a in a_set for b in a_set if a <= b], domain=a_set
+    )
 
     assert r1.is_symmetric() is True
     assert r2.is_symmetric() is False

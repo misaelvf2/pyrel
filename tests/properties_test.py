@@ -55,6 +55,41 @@ def test_transitive():
     r2 = BinaryRelation(
         relation=[(a, b) for a in a_set for b in a_set if a == b + 1], domain=a_set
     )
+    r3 = BinaryRelation(
+        relation={
+            (2, 1),
+            (3, 1),
+            (3, 2),
+            (4, 1),
+            (4, 2),
+            (4, 3),
+        },
+        domain=[1, 2, 3, 4],
+    )
+    r4 = BinaryRelation(
+        relation={
+            (1, 1),
+            (1, 2),
+            (1, 3),
+            (1, 4),
+            (2, 2),
+            (2, 3),
+            (2, 4),
+            (3, 3),
+            (3, 4),
+            (4, 4),
+        },
+        domain=[1, 2, 3, 4],
+    )
+    r5 = BinaryRelation(
+        relation={
+            (3, 4),
+        },
+        domain=[1, 2, 3, 4],
+    )
 
     assert r1.is_transitive() is True
     assert r2.is_transitive() is False
+    assert r3.is_transitive() is True
+    assert r4.is_transitive() is True
+    assert r5.is_transitive() is True

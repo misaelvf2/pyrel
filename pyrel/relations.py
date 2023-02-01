@@ -31,22 +31,28 @@ class BinaryRelation:
                 for pair in self._relation:
                     yield pair
 
-    def is_reflexive(self):
+    def is_reflexive(self) -> bool:
         if self._domain is not None and self._relation is not None:
             for elem in self._domain:
                 if (elem, elem) not in self._relation:
                     return False
         return True
 
-    def is_symmetric(self):
+    def is_symmetric(self) -> bool:
         if self._domain is not None and self._relation is not None:
             for a, b in self._relation:
                 if (b, a) not in self._relation:
                     return False
         return True
 
-    def is_transitive(self):
-        return False
+    def is_transitive(self) -> bool:
+        if self._domain is not None and self._relation is not None:
+            for a, b in self._relation:
+                for c, d in self._relation:
+                    if b == c:
+                        if (a, d) not in self._relation:
+                            return False
+        return True
 
     def __contains__(self, item: tuple[Any, Any]) -> bool:
         if self._relation is None:

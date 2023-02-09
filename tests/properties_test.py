@@ -1,3 +1,5 @@
+from xml import dom
+
 from pyrel.relations import BinaryRelation
 
 
@@ -96,7 +98,23 @@ def test_transitive():
 
 
 def test_union():
-    pass
+    r1 = BinaryRelation(
+        domain={1, 2, 3}, codomain={1, 2, 3, 4}, relation={(1, 1), (2, 2), (3, 3)}
+    )
+
+    r2 = BinaryRelation(
+        domain={1, 2, 3},
+        codomain={1, 2, 3, 4},
+        relation={(1, 1), (1, 2), (1, 3), (1, 4)},
+    )
+
+    expected = BinaryRelation(
+        domain={1, 2, 3},
+        codomain={1, 2, 3, 4},
+        relation={(1, 1), (2, 2), (3, 3), (1, 2), (1, 3), (1, 4)},
+    )
+
+    assert r1.union(r2) == expected
 
 
 def test_intersection():

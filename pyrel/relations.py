@@ -1,25 +1,27 @@
-from typing import Any, Callable, Iterable
+from typing import Any, Callable, Set
 
 
 class BinaryRelation:
     def __init__(
         self,
-        relation: Iterable[tuple[Any, Any]] | None = None,
+        domain: Set[Any] | None = None,
+        codomain: Set[Any] | None = None,
+        relation: Set[tuple[Any, Any]] | None = None,
         from_function: bool = False,
-        domain: Iterable[Any] | None = None,
         function: Callable[[Any], Any] | None = None,
     ) -> None:
 
+        self._domain = domain
+        self._codomain = codomain
         self._relation = relation
         if from_function:
             if domain is None or function is None:
                 raise ValueError
             self._function = function
-        self._domain = domain
         self._from_function = from_function
 
     @property
-    def relation(self) -> Iterable[tuple[Any, Any]] | None:
+    def relation(self) -> Set[tuple[Any, Any]] | None:
         return self._relation
 
     def elements(self) -> tuple[Any, Any]:
@@ -55,7 +57,11 @@ class BinaryRelation:
         return True
 
     def union(self, other_relation: BinaryRelation) -> BinaryRelation:
-        pass
+        result_relation = self.relation if self.relation is not None else set()
+        result_relation |= (
+            other_relation.relation if other_relation.relation is not None else set()
+        )
+        return BinaryRelation(relation=result_relation)
 
     def intersection(self, other_relation: BinaryRelation) -> BinaryRelation:
         pass

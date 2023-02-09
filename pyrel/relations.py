@@ -79,3 +79,8 @@ class BinaryRelation:
         if self._relation is None:
             return False
         return item in self._relation
+
+    def __eq__(self, other_relation: BinaryRelation) -> bool:
+        if self.relation is None or other_relation.relation is None:
+            return False
+        return self.relation == self.other_relation.relation

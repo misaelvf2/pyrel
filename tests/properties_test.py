@@ -1,5 +1,3 @@
-from xml import dom
-
 from pyrel.relations import BinaryRelation
 
 
@@ -48,14 +46,14 @@ def test_symmetric():
 
 
 def test_transitive():
-    a_set = [i for i in range(10)]
+    a_set = set(i for i in range(10))
 
     r1 = BinaryRelation(
-        relation=[(a, b) for a in a_set for b in a_set if a == b or a == -b],
+        relation={(a, b) for a in a_set for b in a_set if a == b or a == -b},
         domain=a_set,
     )
     r2 = BinaryRelation(
-        relation=[(a, b) for a in a_set for b in a_set if a == b + 1], domain=a_set
+        relation=set((a, b) for a in a_set for b in a_set if a == b + 1), domain=a_set
     )
     r3 = BinaryRelation(
         relation={
@@ -66,7 +64,7 @@ def test_transitive():
             (4, 2),
             (4, 3),
         },
-        domain=[1, 2, 3, 4],
+        domain={1, 2, 3, 4},
     )
     r4 = BinaryRelation(
         relation={
@@ -81,13 +79,13 @@ def test_transitive():
             (3, 4),
             (4, 4),
         },
-        domain=[1, 2, 3, 4],
+        domain={1, 2, 3, 4},
     )
     r5 = BinaryRelation(
         relation={
             (3, 4),
         },
-        domain=[1, 2, 3, 4],
+        domain={1, 2, 3, 4},
     )
 
     assert r1.is_transitive() is True

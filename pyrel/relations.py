@@ -1,4 +1,4 @@
-from typing import Any, Callable, Set
+from typing import Any, Callable, Self, Set
 
 
 class BinaryRelation:
@@ -56,23 +56,23 @@ class BinaryRelation:
                             return False
         return True
 
-    def union(self, other_relation: BinaryRelation) -> BinaryRelation:
+    def union(self, other_relation: Self) -> Self:
         result_relation = self.relation if self.relation is not None else set()
         result_relation |= (
             other_relation.relation if other_relation.relation is not None else set()
         )
         return BinaryRelation(relation=result_relation)
 
-    def intersection(self, other_relation: BinaryRelation) -> BinaryRelation:
+    def intersection(self, other_relation: Self) -> Self:
         pass
 
-    def difference(self, other_relation: BinaryRelation) -> BinaryRelation:
+    def difference(self, other_relation: Self) -> Self:
         pass
 
-    def symmetric_difference(self, other_relation: BinaryRelation) -> BinaryRelation:
+    def symmetric_difference(self, other_relation: Self) -> Self:
         pass
 
-    def compose(self, other_relation: BinaryRelation) -> BinaryRelation:
+    def compose(self, other_relation: Self) -> Self:
         pass
 
     def __contains__(self, item: tuple[Any, Any]) -> bool:
@@ -80,7 +80,7 @@ class BinaryRelation:
             return False
         return item in self._relation
 
-    def __eq__(self, other_relation: BinaryRelation) -> bool:
+    def __eq__(self, other_relation: Self) -> bool:
         if self.relation is None or other_relation.relation is None:
             return False
-        return self.relation == self.other_relation.relation
+        return self.relation == other_relation.relation

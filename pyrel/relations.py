@@ -54,6 +54,21 @@ class BinaryRelation:
                             return False
         return True
 
+    def union(self, other_relation: BinaryRelation) -> BinaryRelation:
+        pass
+
+    def intersection(self, other_relation: BinaryRelation) -> BinaryRelation:
+        pass
+
+    def difference(self, other_relation: BinaryRelation) -> BinaryRelation:
+        pass
+
+    def symmetric_difference(self, other_relation: BinaryRelation) -> BinaryRelation:
+        pass
+
+    def compose(self, other_relation: BinaryRelation) -> BinaryRelation:
+        pass
+
     def __contains__(self, item: tuple[Any, Any]) -> bool:
         if self._relation is None:
             return False

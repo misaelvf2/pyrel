@@ -93,3 +93,23 @@ def test_transitive():
     assert r3.is_transitive() is True
     assert r4.is_transitive() is True
     assert r5.is_transitive() is True
+
+
+def test_union():
+    pass
+
+
+def test_intersection():
+    pass
+
+
+def test_difference():
+    pass
+
+
+def test_symmetric_difference():
+    pass
+
+
+def test_compose():
+    pass

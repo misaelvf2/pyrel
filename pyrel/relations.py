@@ -64,7 +64,11 @@ class BinaryRelation:
         return BinaryRelation(relation=result_relation)
 
     def intersection(self, other_relation: Self) -> Self:
-        pass
+        result_relation = self.relation if self.relation is not None else set()
+        result_relation &= (
+            other_relation.relation if other_relation.relation is not None else set()
+        )
+        return BinaryRelation(relation=result_relation)
 
     def difference(self, other_relation: Self) -> Self:
         pass

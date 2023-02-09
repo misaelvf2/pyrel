@@ -116,7 +116,23 @@ def test_union():
 
 
 def test_intersection():
-    pass
+    r1 = BinaryRelation(
+        domain={1, 2, 3}, codomain={1, 2, 3, 4}, relation={(1, 1), (2, 2), (3, 3)}
+    )
+
+    r2 = BinaryRelation(
+        domain={1, 2, 3},
+        codomain={1, 2, 3, 4},
+        relation={(1, 1), (1, 2), (1, 3), (1, 4)},
+    )
+
+    expected = BinaryRelation(
+        domain={1, 2, 3},
+        codomain={1, 2, 3, 4},
+        relation={(1, 1)},
+    )
+
+    assert r1.intersection(r2) == expected
 
 
 def test_difference():

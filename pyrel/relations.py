@@ -48,7 +48,7 @@ class BinaryRelation:
         return True
 
     def is_transitive(self) -> bool:
-        if self._domain is not None and self._relation is not None:
+        if self._relation is not None:
             for a, b in self._relation:
                 for c, d in self._relation:
                     if b == c:
@@ -85,7 +85,14 @@ class BinaryRelation:
         return BinaryRelation(relation=result_relation)
 
     def compose(self, other_relation: Self) -> Self:
-        pass
+        result_relation = set()
+        if self.relation is not None:
+            for a, b in self.relation:
+                if other_relation.relation is not None:
+                    for c, d in other_relation.relation:
+                        if b == c:
+                            result_relation.add((a, d))
+        return BinaryRelation(relation=result_relation)
 
     def __contains__(self, item: tuple[Any, Any]) -> bool:
         if self._relation is None:

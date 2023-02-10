@@ -136,11 +136,43 @@ def test_intersection():
 
 
 def test_difference():
-    pass
+    r1 = BinaryRelation(
+        domain={1, 2, 3}, codomain={1, 2, 3, 4}, relation={(1, 1), (2, 2), (3, 3)}
+    )
+
+    r2 = BinaryRelation(
+        domain={1, 2, 3},
+        codomain={1, 2, 3, 4},
+        relation={(1, 1), (1, 2), (1, 3), (1, 4)},
+    )
+
+    expected = BinaryRelation(
+        domain={1, 2, 3},
+        codomain={1, 2, 3, 4},
+        relation={(2, 2), (3, 3)},
+    )
+
+    assert r1.difference(r2) == expected
 
 
 def test_symmetric_difference():
-    pass
+    r1 = BinaryRelation(
+        domain={1, 2, 3}, codomain={1, 2, 3, 4}, relation={(1, 1), (2, 2), (3, 3)}
+    )
+
+    r2 = BinaryRelation(
+        domain={1, 2, 3},
+        codomain={1, 2, 3, 4},
+        relation={(1, 1), (1, 2), (1, 3), (1, 4)},
+    )
+
+    expected = BinaryRelation(
+        domain={1, 2, 3},
+        codomain={1, 2, 3, 4},
+        relation={(2, 2), (3, 3), (1, 2), (1, 3), (1, 4)},
+    )
+
+    assert r1.symmetric_difference(r2) == expected
 
 
 def test_compose():

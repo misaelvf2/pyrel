@@ -103,3 +103,9 @@ class BinaryRelation:
         if self.relation is None or other_relation.relation is None:
             return False
         return self.relation == other_relation.relation
+
+    def __repr__(self):
+        return f"BinaryRelation(domain={self._domain}, codomain={self._codomain}, relation={self._relation})"
+
+    def __str__(self):
+        return f"{self._relation}"

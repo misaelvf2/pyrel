@@ -1,3 +1,4 @@
+import itertools
 from typing import Any, Callable, Self, Set
 
 
@@ -92,6 +93,20 @@ class BinaryRelation:
                     for c, d in other_relation.relation:
                         if b == c:
                             result_relation.add((a, d))
+        return BinaryRelation(relation=result_relation)
+
+    def inverse(self) -> Self:
+        result_relation = set()
+        if self.relation is not None:
+            for a, b in self.relation:
+                result_relation.add((b, a))
+        return BinaryRelation(relation=result_relation)
+
+    def complement(self) -> Self:
+        if self._domain is None or self._codomain is None:
+            raise ValueError
+        result_relation = set(itertools.product(self._domain, self._codomain))
+        result_relation -= self._relation if self._relation is not None else set()
         return BinaryRelation(relation=result_relation)
 
     def __contains__(self, item: tuple[Any, Any]) -> bool:

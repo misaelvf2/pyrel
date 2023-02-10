@@ -193,3 +193,31 @@ def test_compose():
     )
 
     assert r1.compose(r2) == expected
+
+
+def test_inverse():
+    r1 = BinaryRelation(
+        domain={1, 2, 3},
+        codomain={1, 2, 3, 4},
+        relation={(1, 1), (1, 4), (2, 3), (3, 1), (3, 4)},
+    )
+
+    expected = BinaryRelation(
+        relation={(1, 1), (4, 1), (3, 2), (1, 3), (4, 3)},
+    )
+
+    assert r1.inverse() == expected
+
+
+def test_complement():
+    r1 = BinaryRelation(
+        domain={1, 2, 3},
+        codomain={1, 2, 3},
+        relation={(1, 1), (2, 3), (3, 1)},
+    )
+
+    expected = BinaryRelation(
+        relation={(1, 2), (1, 3), (2, 1), (2, 2), (3, 2), (3, 3)},
+    )
+
+    assert r1.complement() == expected

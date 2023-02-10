@@ -57,7 +57,67 @@ def squares_relation_test():
         print(elem)
 
 
+def a_divides_b_test():
+    a_set = (1, 2, 3, 4)
+
+    relation_set = ((a, b) for a in a_set for b in a_set if b % a == 0)
+
+    relation = BinaryRelation(relation=relation_set)
+
+    for elem in relation.elements():
+        print(elem)
+
+
+def example_5():
+    a_set = [i for i in range(10)]
+
+    relations = [
+        (
+            "r1",
+            BinaryRelation(relation=[(a, b) for a in a_set for b in a_set if a <= b]),
+        ),
+        (
+            "r2",
+            BinaryRelation(relation=[(a, b) for a in a_set for b in a_set if a > b]),
+        ),
+        (
+            "r3",
+            BinaryRelation(
+                relation=[(a, b) for a in a_set for b in a_set if a == b or a == -b]
+            ),
+        ),
+        (
+            "r4",
+            BinaryRelation(relation=[(a, b) for a in a_set for b in a_set if a == b]),
+        ),
+        (
+            "r5",
+            BinaryRelation(
+                relation=[(a, b) for a in a_set for b in a_set if a == b + 1]
+            ),
+        ),
+        (
+            "r6",
+            BinaryRelation(
+                relation=[(a, b) for a in a_set for b in a_set if a + b <= 3]
+            ),
+        ),
+    ]
+
+    pairs = [(1, 1), (1, 2), (2, 1), (1, -1), (2, 2)]
+
+    for pair in pairs:
+        for relation in relations:
+            if pair in relation[1]:
+                print(f"{pair} in {relation[0]}")
+
+
 if __name__ == "__main__":
-    students_test()
-    cities_test()
-    squares_relation_test()
+    domain = {0, 1, 2, 3, 4}
+    codomain = {0, 1, 2, 3}
+    relation = BinaryRelation(
+        domain=domain,
+        codomain=codomain,
+        relation={(a, b) for a in domain for b in codomain if a == b},
+    )
+    print(relation)

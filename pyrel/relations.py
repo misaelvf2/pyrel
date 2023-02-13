@@ -42,6 +42,12 @@ class BinaryRelation:
                 for pair in self._relation:
                     yield pair
 
+    def add_pair(self, pair: tuple[Any, Any]) -> None:
+        a, b = pair
+        self._domain.add(a)
+        self._codomain.add(b)
+        self._relation.add((a, b))
+
     def is_reflexive(self) -> bool:
         if self._domain:
             for elem in self._domain:

@@ -1,3 +1,5 @@
+import numbers
+
 from pyrel.relations import BinaryRelation
 
 
@@ -221,3 +223,12 @@ def test_complement():
     )
 
     assert r1.complement() == expected
+
+
+def test_add_pair():
+    r = BinaryRelation()
+    r.add_pair(("Misael", "Valentin"))
+    r.add_pair(("Ashley", "Villanueva"))
+
+    assert ("Misael", "Valentin") in r
+    assert ("Ashley", "Villanueva") in r

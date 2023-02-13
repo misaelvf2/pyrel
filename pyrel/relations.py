@@ -1,7 +1,5 @@
 import itertools
-from typing import Any, Callable, Generator, Self, Set, TypeVar
-
-T = TypeVar("T", bound="BinaryRelation")
+from typing import Any, Callable, Generator, Self, Set
 
 
 class BinaryRelation:

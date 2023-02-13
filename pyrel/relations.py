@@ -141,7 +141,8 @@ class BinaryRelation:
         return self.relation == other_relation.relation
 
     def __repr__(self) -> str:
-        return f"BinaryRelation(domain={self._domain}, codomain={self._codomain}, relation={self._relation})"
+        return f"BinaryRelation(domain={self._domain}, codomain={self._codomain}, \
+            relation={self._relation})"
 
     def __str__(self) -> str:
         return f"{self._relation}"

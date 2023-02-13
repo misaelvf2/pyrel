@@ -128,6 +128,12 @@ class BinaryRelation:
     def isdisjoint(self, other_relation: Self) -> bool:
         return len(self.intersection(other_relation)) == 0
 
+    def issubset(self, other_relation: Self) -> bool:
+        pass
+
+    def issuperset(self, other_relation: Self) -> bool:
+        pass
+
     def __contains__(self, item: tuple[Any, Any]) -> bool:
         return item in self._relation
 

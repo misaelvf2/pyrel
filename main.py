@@ -1,6 +1,7 @@
 import itertools
+import numbers
 
-from .relations import BinaryRelation
+from pyrel.relations import BinaryRelation
 
 
 def students_test():
@@ -113,11 +114,12 @@ def example_5():
 
 
 if __name__ == "__main__":
-    domain = {0, 1, 2, 3, 4}
-    codomain = {0, 1, 2, 3}
+    domain = numbers.Real
+    codomain = numbers.Real
     relation = BinaryRelation(
         domain=domain,
         codomain=codomain,
-        relation={(a, b) for a in domain for b in codomain if a == b},
     )
+
+    relation.add_pair((5, 7))
     print(relation)

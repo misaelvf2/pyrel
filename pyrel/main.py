@@ -1,6 +1,6 @@
 import itertools
 
-from relations import BinaryRelation
+from .relations import BinaryRelation
 
 
 def students_test():

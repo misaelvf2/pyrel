@@ -54,26 +54,23 @@ class BinaryRelation:
         self._relation.remove(pair)
 
     def is_reflexive(self) -> bool:
-        if self._domain:
-            for elem in self._domain:
-                if (elem, elem) not in self._relation:
-                    return False
+        for elem in self._domain:
+            if (elem, elem) not in self._relation:
+                return False
         return True
 
     def is_symmetric(self) -> bool:
-        if self._domain:
-            for a, b in self._relation:
-                if (b, a) not in self._relation:
-                    return False
+        for a, b in self._relation:
+            if (b, a) not in self._relation:
+                return False
         return True
 
     def is_transitive(self) -> bool:
-        if self._relation:
-            for a, b in self._relation:
-                for c, d in self._relation:
-                    if b == c:
-                        if (a, d) not in self._relation:
-                            return False
+        for a, b in self._relation:
+            for c, d in self._relation:
+                if b == c:
+                    if (a, d) not in self._relation:
+                        return False
         return True
 
     def union(self, other_relation: Self) -> Self:

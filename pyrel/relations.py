@@ -1,22 +1,23 @@
 import itertools
-from typing import Any, Callable, Generator, Self, Set
+from inspect import isclass
+from typing import Any, Callable, Generator, Self, Set, Type
 
 
 class BinaryRelation:
     def __init__(
         self,
-        domain: Set[Any] | None = None,
-        codomain: Set[Any] | None = None,
+        domain: Set[Any] | Type | None = None,
+        codomain: Set[Any] | Type | None = None,
         relation: Set[tuple[Any, Any]] | None = None,
         from_function: bool = False,
         function: Callable[[Any], Any] | None = None,
     ) -> None:
         if domain is None:
-            self._domain = set()
+            self._domain: Set[Any] | Type = set()
         else:
             self._domain = domain
         if codomain is None:
-            self._codomain = set()
+            self._codomain: Set[Any] | Type = set()
         else:
             self._codomain = codomain
         if relation is None:
@@ -30,11 +31,11 @@ class BinaryRelation:
         self._from_function = from_function
 
     @property
-    def domain(self) -> Set[Any]:
+    def domain(self) -> Set[Any] | Type:
         return self._domain
 
     @property
-    def codomain(self) -> Set[Any]:
+    def codomain(self) -> Set[Any] | Type:
         return self._codomain
 
     @property
@@ -52,8 +53,22 @@ class BinaryRelation:
 
     def add_pair(self, pair: tuple[Any, Any]) -> None:
         a, b = pair
-        if a not in self._domain or b not in self._codomain:
-            raise ValueError
+        # Case 1: Domain is a type; codomain is not
+        if isclass(self._domain) and not isclass(self._codomain):
+            if not isinstance(a, self._domain) or b not in self._codomain:
+                raise ValueError
+        # Case 2: Domain and codomain are types
+        elif isclass(self._domain) and isclass(self._codomain):
+            if not isinstance(a, self._domain) or not isinstance(b, self._codomain):
+                raise ValueError
+        # Case 3: Codomain is a type; domain is not
+        elif not isclass(self._domain) and isclass(self._codomain):
+            if a not in self._domain or not isinstance(b, self._codomain):
+                raise ValueError
+        # Case 4: Neither domain nor codomain are types
+        else:
+            if a not in self._domain or b not in self._codomain:
+                raise ValueError
         self._relation.add((a, b))
 
     def remove_pair(self, pair: tuple[Any, Any]) -> None:

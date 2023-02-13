@@ -1,3 +1,5 @@
+import numbers
+
 import pytest
 from pyrel.relations import BinaryRelation
 
@@ -265,3 +267,28 @@ def test_update():
 
 def test_isdisjoint():
     pass
+
+
+def test_real_domain():
+    r = BinaryRelation(domain=numbers.Real, codomain={1, 2, 3})
+
+    with pytest.raises(ValueError):
+        r.add_pair((5j, 1))
+
+    r.add_pair((-0.5, 3))
+
+    assert (-0.5, 3) in r
+
+
+def test_real_relation():
+    r = BinaryRelation(domain=numbers.Real, codomain=numbers.Real)
+
+    with pytest.raises(ValueError):
+        r.add_pair((10, 1j))
+
+    with pytest.raises(ValueError):
+        r.add_pair((5j, 0))
+
+    r.add_pair((-10, 0.76))
+
+    assert (-10, 0.76) in r

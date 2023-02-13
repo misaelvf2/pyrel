@@ -125,14 +125,20 @@ class BinaryRelation:
         result_relation -= self._relation
         return BinaryRelation(relation=result_relation)
 
+    def isdisjoint(self, other_relation: Self) -> bool:
+        return len(self.intersection(other_relation)) == 0
+
     def __contains__(self, item: tuple[Any, Any]) -> bool:
         return item in self._relation
 
     def __eq__(self, other_relation: Self) -> bool:
         return self.relation == other_relation.relation
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"BinaryRelation(domain={self._domain}, codomain={self._codomain}, relation={self._relation})"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self._relation}"
+
+    def __len__(self) -> int:
+        return len(self._relation)

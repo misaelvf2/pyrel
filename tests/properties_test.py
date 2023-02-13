@@ -257,3 +257,11 @@ def test_length():
     r.add_pair((1, 2))
 
     assert len(r) == 2
+
+
+def test_update():
+    pass
+
+
+def test_isdisjoint():
+    pass

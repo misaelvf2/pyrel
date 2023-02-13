@@ -1,5 +1,7 @@
 import itertools
-from typing import Any, Callable, Self, Set
+from typing import Any, Callable, Generator, Self, Set, TypeVar
+
+T = TypeVar("T", bound="BinaryRelation")
 
 
 class BinaryRelation:
@@ -41,7 +43,7 @@ class BinaryRelation:
     def relation(self) -> Set[tuple[Any, Any]]:
         return self._relation
 
-    def elements(self) -> tuple[Any, Any]:
+    def elements(self) -> tuple[Any, Any] | Generator:
         if self._from_function:
             for x in self._domain:
                 yield (x, self._function(x))
@@ -89,22 +91,22 @@ class BinaryRelation:
     def union(self, other_relation: Self) -> Self:
         result_relation = self.relation
         result_relation |= other_relation.relation
-        return BinaryRelation(relation=result_relation)
+        return self.__class__(relation=result_relation)
 
     def intersection(self, other_relation: Self) -> Self:
         result_relation = self.relation
         result_relation &= other_relation.relation
-        return BinaryRelation(relation=result_relation)
+        return self.__class__(relation=result_relation)
 
     def difference(self, other_relation: Self) -> Self:
         result_relation = self.relation
         result_relation -= other_relation.relation
-        return BinaryRelation(relation=result_relation)
+        return self.__class__(relation=result_relation)
 
     def symmetric_difference(self, other_relation: Self) -> Self:
         result_relation = self.relation
         result_relation ^= other_relation.relation
-        return BinaryRelation(relation=result_relation)
+        return self.__class__(relation=result_relation)
 
     def compose(self, other_relation: Self) -> Self:
         result_relation = set()
@@ -112,32 +114,36 @@ class BinaryRelation:
             for c, d in other_relation.relation:
                 if b == c:
                     result_relation.add((a, d))
-        return BinaryRelation(relation=result_relation)
+        return self.__class__(relation=result_relation)
 
     def inverse(self) -> Self:
         result_relation = set()
         for a, b in self.relation:
             result_relation.add((b, a))
-        return BinaryRelation(relation=result_relation)
+        return self.__class__(relation=result_relation)
 
     def complement(self) -> Self:
         result_relation = set(itertools.product(self._domain, self._codomain))
         result_relation -= self._relation
-        return BinaryRelation(relation=result_relation)
+        return self.__class__(relation=result_relation)
 
     def isdisjoint(self, other_relation: Self) -> bool:
         return len(self.intersection(other_relation)) == 0
 
     def issubset(self, other_relation: Self) -> bool:
-        pass
+        # TODO
+        return False
 
     def issuperset(self, other_relation: Self) -> bool:
-        pass
+        # TODO
+        return False
 
     def __contains__(self, item: tuple[Any, Any]) -> bool:
         return item in self._relation
 
-    def __eq__(self, other_relation: Self) -> bool:
+    def __eq__(self, other_relation: object) -> bool:
+        if not isinstance(other_relation, self.__class__):
+            raise NotImplementedError
         return self.relation == other_relation.relation
 
     def __repr__(self) -> str:

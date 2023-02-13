@@ -247,3 +247,13 @@ def test_remove_pair():
     r.remove_pair(("Ashley", "Villanueva"))
 
     assert ("Ashley", "Villanueva") not in r
+
+
+def test_length():
+    r = BinaryRelation(domain={1, 2, 3}, codomain={1, 2, 3})
+    r.add_pair((1, 2))
+    r.add_pair((1, 3))
+    r.add_pair((1, 3))
+    r.add_pair((1, 2))
+
+    assert len(r) == 2

@@ -44,8 +44,8 @@ class BinaryRelation:
 
     def add_pair(self, pair: tuple[Any, Any]) -> None:
         a, b = pair
-        self._domain.add(a)
-        self._codomain.add(b)
+        if a not in self._domain or b not in self._codomain:
+            raise ValueError
         self._relation.add((a, b))
 
     def remove_pair(self, pair: tuple[Any, Any]) -> None:

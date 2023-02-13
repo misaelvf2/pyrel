@@ -225,16 +225,19 @@ def test_complement():
 
 
 def test_add_pair():
-    r = BinaryRelation()
+    r = BinaryRelation(domain={"Misael", "Ashley"}, codomain={"Valentin", "Villanueva"})
     r.add_pair(("Misael", "Valentin"))
     r.add_pair(("Ashley", "Villanueva"))
+
+    with pytest.raises(ValueError):
+        r.add_pair(("Valentin", "Misael"))
 
     assert ("Misael", "Valentin") in r
     assert ("Ashley", "Villanueva") in r
 
 
 def test_remove_pair():
-    r = BinaryRelation()
+    r = BinaryRelation(domain={"Misael", "Ashley"}, codomain={"Valentin", "Villanueva"})
     r.add_pair(("Misael", "Valentin"))
     r.add_pair(("Ashley", "Villanueva"))
 

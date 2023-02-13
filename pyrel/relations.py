@@ -48,6 +48,11 @@ class BinaryRelation:
         self._codomain.add(b)
         self._relation.add((a, b))
 
+    def remove_pair(self, pair: tuple[Any, Any]) -> None:
+        if pair not in self._relation:
+            raise KeyError
+        self._relation.remove(pair)
+
     def is_reflexive(self) -> bool:
         if self._domain:
             for elem in self._domain:

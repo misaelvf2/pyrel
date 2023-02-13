@@ -1,5 +1,4 @@
-import numbers
-
+import pytest
 from pyrel.relations import BinaryRelation
 
 
@@ -232,3 +231,16 @@ def test_add_pair():
 
     assert ("Misael", "Valentin") in r
     assert ("Ashley", "Villanueva") in r
+
+
+def test_remove_pair():
+    r = BinaryRelation()
+    r.add_pair(("Misael", "Valentin"))
+    r.add_pair(("Ashley", "Villanueva"))
+
+    with pytest.raises(KeyError):
+        r.remove_pair(("Misael", "Villanueva"))
+
+    r.remove_pair(("Ashley", "Villanueva"))
+
+    assert ("Ashley", "Villanueva") not in r

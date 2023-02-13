@@ -11,10 +11,18 @@ class BinaryRelation:
         from_function: bool = False,
         function: Callable[[Any], Any] | None = None,
     ) -> None:
-
-        self._domain = domain
-        self._codomain = codomain
-        self._relation = relation
+        if domain is None:
+            self._domain = set()
+        else:
+            self._domain = domain
+        if codomain is None:
+            self._codomain = set()
+        else:
+            self._codomain = codomain
+        if relation is None:
+            self._relation = set()
+        else:
+            self._relation = relation
         if from_function:
             if domain is None or function is None:
                 raise ValueError
@@ -22,11 +30,11 @@ class BinaryRelation:
         self._from_function = from_function
 
     @property
-    def relation(self) -> Set[tuple[Any, Any]] | None:
+    def relation(self) -> Set[tuple[Any, Any]]:
         return self._relation
 
     def elements(self) -> tuple[Any, Any]:
-        if self._from_function and self._domain is not None:
+        if self._from_function:
             for x in self._domain:
                 yield (x, self._function(x))
         else:
@@ -35,21 +43,21 @@ class BinaryRelation:
                     yield pair
 
     def is_reflexive(self) -> bool:
-        if self._domain is not None and self._relation is not None:
+        if self._domain:
             for elem in self._domain:
                 if (elem, elem) not in self._relation:
                     return False
         return True
 
     def is_symmetric(self) -> bool:
-        if self._domain is not None and self._relation is not None:
+        if self._domain:
             for a, b in self._relation:
                 if (b, a) not in self._relation:
                     return False
         return True
 
     def is_transitive(self) -> bool:
-        if self._relation is not None:
+        if self._relation:
             for a, b in self._relation:
                 for c, d in self._relation:
                     if b == c:
@@ -58,65 +66,48 @@ class BinaryRelation:
         return True
 
     def union(self, other_relation: Self) -> Self:
-        result_relation = self.relation if self.relation is not None else set()
-        result_relation |= (
-            other_relation.relation if other_relation.relation is not None else set()
-        )
+        result_relation = self.relation
+        result_relation |= other_relation.relation
         return BinaryRelation(relation=result_relation)
 
     def intersection(self, other_relation: Self) -> Self:
-        result_relation = self.relation if self.relation is not None else set()
-        result_relation &= (
-            other_relation.relation if other_relation.relation is not None else set()
-        )
+        result_relation = self.relation
+        result_relation &= other_relation.relation
         return BinaryRelation(relation=result_relation)
 
     def difference(self, other_relation: Self) -> Self:
-        result_relation = self.relation if self.relation is not None else set()
-        result_relation -= (
-            other_relation.relation if other_relation.relation is not None else set()
-        )
+        result_relation = self.relation
+        result_relation -= other_relation.relation
         return BinaryRelation(relation=result_relation)
 
     def symmetric_difference(self, other_relation: Self) -> Self:
-        result_relation = self.relation if self.relation is not None else set()
-        result_relation ^= (
-            other_relation.relation if other_relation.relation is not None else set()
-        )
+        result_relation = self.relation
+        result_relation ^= other_relation.relation
         return BinaryRelation(relation=result_relation)
 
     def compose(self, other_relation: Self) -> Self:
         result_relation = set()
-        if self.relation is not None:
-            for a, b in self.relation:
-                if other_relation.relation is not None:
-                    for c, d in other_relation.relation:
-                        if b == c:
-                            result_relation.add((a, d))
+        for a, b in self.relation:
+            for c, d in other_relation.relation:
+                if b == c:
+                    result_relation.add((a, d))
         return BinaryRelation(relation=result_relation)
 
     def inverse(self) -> Self:
         result_relation = set()
-        if self.relation is not None:
-            for a, b in self.relation:
-                result_relation.add((b, a))
+        for a, b in self.relation:
+            result_relation.add((b, a))
         return BinaryRelation(relation=result_relation)
 
     def complement(self) -> Self:
-        if self._domain is None or self._codomain is None:
-            raise ValueError
         result_relation = set(itertools.product(self._domain, self._codomain))
-        result_relation -= self._relation if self._relation is not None else set()
+        result_relation -= self._relation
         return BinaryRelation(relation=result_relation)
 
     def __contains__(self, item: tuple[Any, Any]) -> bool:
-        if self._relation is None:
-            return False
         return item in self._relation
 
     def __eq__(self, other_relation: Self) -> bool:
-        if self.relation is None or other_relation.relation is None:
-            return False
         return self.relation == other_relation.relation
 
     def __repr__(self):

@@ -81,6 +81,11 @@ class BinaryRelation:
                         return False
         return True
 
+    def update(self, other_relation: Self) -> None:
+        self._domain |= other_relation.domain
+        self._codomain |= other_relation.codomain
+        self._relation |= other_relation.relation
+
     def union(self, other_relation: Self) -> Self:
         result_relation = self.relation
         result_relation |= other_relation.relation

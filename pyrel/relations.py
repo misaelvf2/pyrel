@@ -30,6 +30,14 @@ class BinaryRelation:
         self._from_function = from_function
 
     @property
+    def domain(self) -> Set[Any]:
+        return self._domain
+
+    @property
+    def codomain(self) -> Set[Any]:
+        return self._codomain
+
+    @property
     def relation(self) -> Set[tuple[Any, Any]]:
         return self._relation
 

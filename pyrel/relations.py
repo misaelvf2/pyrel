@@ -44,55 +44,55 @@ class BinaryRelation:
 
     def elements(self) -> tuple[Any, Any] | Generator:
         if self._from_function:
-            for x in self._domain:
+            for x in self.domain:
                 yield (x, self._function(x))
         else:
-            if self._relation:
-                for pair in self._relation:
+            if self.relation:
+                for pair in self.relation:
                     yield pair
 
     def add_pair(self, pair: tuple[Any, Any]) -> None:
         a, b = pair
         # Case 1: Domain is a type; codomain is not
-        if isclass(self._domain) and not isclass(self._codomain):
+        if isclass(self.domain) and not isclass(self.codomain):
             if not isinstance(a, self._domain) or b not in self._codomain:
                 raise ValueError
         # Case 2: Domain and codomain are types
-        elif isclass(self._domain) and isclass(self._codomain):
-            if not isinstance(a, self._domain) or not isinstance(b, self._codomain):
+        elif isclass(self.domain) and isclass(self.codomain):
+            if not isinstance(a, self.domain) or not isinstance(b, self.codomain):
                 raise ValueError
         # Case 3: Codomain is a type; domain is not
-        elif not isclass(self._domain) and isclass(self._codomain):
-            if a not in self._domain or not isinstance(b, self._codomain):
+        elif not isclass(self.domain) and isclass(self.codomain):
+            if a not in self.domain or not isinstance(b, self.codomain):
                 raise ValueError
         # Case 4: Neither domain nor codomain are types
         else:
-            if a not in self._domain or b not in self._codomain:
+            if a not in self.domain or b not in self.codomain:
                 raise ValueError
-        self._relation.add((a, b))
+        self.relation.add((a, b))
 
     def remove_pair(self, pair: tuple[Any, Any]) -> None:
-        if pair not in self._relation:
+        if pair not in self.relation:
             raise KeyError
-        self._relation.remove(pair)
+        self.relation.remove(pair)
 
     def is_reflexive(self) -> bool:
-        for elem in self._domain:
-            if (elem, elem) not in self._relation:
+        for elem in self.domain:
+            if (elem, elem) not in self.relation:
                 return False
         return True
 
     def is_symmetric(self) -> bool:
-        for a, b in self._relation:
-            if (b, a) not in self._relation:
+        for a, b in self.relation:
+            if (b, a) not in self.relation:
                 return False
         return True
 
     def is_transitive(self) -> bool:
-        for a, b in self._relation:
-            for c, d in self._relation:
+        for a, b in self.relation:
+            for c, d in self.relation:
                 if b == c:
-                    if (a, d) not in self._relation:
+                    if (a, d) not in self.relation:
                         return False
         return True
 
@@ -102,10 +102,10 @@ class BinaryRelation:
                 "Operation not implemented for class-based domains and codomains"
             )
         if isinstance(other_relation.domain, set):
-            self._domain.update(other_relation.domain)
+            self.domain.update(other_relation.domain)
         if isinstance(other_relation.codomain, set):
-            self._codomain.update(other_relation.codomain)
-        self._relation.update(other_relation.relation)
+            self.codomain.update(other_relation.codomain)
+        self.relation.update(other_relation.relation)
         return self
 
     def union(self, other_relation: Self) -> Self:

@@ -96,6 +96,75 @@ class BinaryRelation:
                         return False
         return True
 
+    def is_irreflexive(self) -> bool:
+        raise NotImplementedError
+
+    def is_antisymmetric(self) -> bool:
+        raise NotImplementedError
+
+    def is_asymmetric(self) -> bool:
+        raise NotImplementedError
+
+    def is_connected(self) -> bool:
+        raise NotImplementedError
+
+    def is_strongly_connected(self) -> bool:
+        raise NotImplementedError
+
+    def is_well_founded(self) -> bool:
+        raise NotImplementedError
+
+    def is_injective(self) -> bool:
+        raise NotImplementedError
+
+    def is_functional(self) -> bool:
+        raise NotImplementedError
+
+    def is_serial(self) -> bool:
+        raise NotImplementedError
+
+    def is_surjective(self) -> bool:
+        raise NotImplementedError
+
+    def is_equivalence_relation(self) -> bool:
+        raise NotImplementedError
+
+    def is_partial_order(self) -> bool:
+        raise NotImplementedError
+
+    def is_strict_partial_order(self) -> bool:
+        raise NotImplementedError
+
+    def is_total_order(self) -> bool:
+        raise NotImplementedError
+
+    def is_strict_total_order(self) -> bool:
+        raise NotImplementedError
+
+    def is_one_to_one(self) -> bool:
+        raise NotImplementedError
+
+    def is_one_to_many(self) -> bool:
+        raise NotImplementedError
+
+    def is_many_to_one(self) -> bool:
+        raise NotImplementedError
+
+    def is_many_to_many(self) -> bool:
+        raise NotImplementedError
+
+    def is_function(self) -> bool:
+        raise NotImplementedError
+
+    def is_injection(self) -> bool:
+        raise NotImplementedError
+
+    def is_surjection(self) -> bool:
+        raise NotImplementedError
+
+    def is_bijection(self) -> bool:
+        raise NotImplementedError
+
     def update(self, other_relation: Self) -> Self:
         if self._unimplemented_operation(other_relation):
             raise ValueError(
@@ -204,6 +273,12 @@ class BinaryRelation:
             codomain=self.codomain.copy(),
             relation=result_relation,
         )
+
+    def converse(self) -> Self:
+        raise NotImplementedError
+
+    def restriction(self) -> Self:
+        raise NotImplementedError
 
     def isdisjoint(self, other_relation: Self) -> bool:
         return len(self.intersection(other_relation)) == 0

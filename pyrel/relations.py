@@ -30,6 +30,17 @@ class BinaryRelation:
             self._function = function
         self._from_function = from_function
 
+    @classmethod
+    def from_function(
+        cls,
+        domain: Set[Any] | Type,
+        codomain: Set[Any] | Type,
+        function: Callable[[Any], Any],
+    ) -> Self:
+        return cls(
+            domain=domain, codomain=codomain, from_function=True, function=function
+        )
+
     @property
     def domain(self) -> Set[Any] | Type:
         return self._domain
@@ -55,7 +66,7 @@ class BinaryRelation:
         a, b = pair
         # Case 1: Domain is a type; codomain is not
         if isclass(self.domain) and not isclass(self.codomain):
-            if not isinstance(a, self._domain) or b not in self._codomain:
+            if not isinstance(a, self.domain) or b not in self.codomain:
                 raise ValueError
         # Case 2: Domain and codomain are types
         elif isclass(self.domain) and isclass(self.codomain):
@@ -292,6 +303,11 @@ class BinaryRelation:
         return False
 
     def __contains__(self, item: tuple[Any, Any]) -> bool:
+        if self._from_function:
+            a, b = item
+            if a not in self.domain:
+                return False
+            return b == self._function(a)
         return item in self._relation
 
     def __eq__(self, other_relation: object) -> bool:
@@ -300,14 +316,14 @@ class BinaryRelation:
         return self.relation == other_relation.relation
 
     def __repr__(self) -> str:
-        return f"BinaryRelation(domain={self._domain}, codomain={self._codomain}, \
-            relation={self._relation})"
+        return f"BinaryRelation(domain={self.domain}, codomain={self.codomain}, \
+            relation={self.relation})"
 
     def __str__(self) -> str:
-        return f"{self._relation}"
+        return f"{self.relation}"
 
     def __len__(self) -> int:
-        return len(self._relation)
+        return len(self.relation)
 
     def _unimplemented_operation(self, other_relation: Self | None = None) -> bool:
         if isclass(self.domain) or isclass(self.codomain):

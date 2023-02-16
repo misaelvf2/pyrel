@@ -67,20 +67,28 @@ class BinaryRelation:
         a, b = pair
         # Case 1: Domain is a type; codomain is not
         if isclass(self.domain) and not isclass(self.codomain):
-            if not isinstance(a, self.domain) or b not in self.codomain:
-                raise ValueError
+            if not isinstance(a, self.domain):
+                raise ValueError(f"{a} is not domain")
+            if b not in self.codomain:
+                raise ValueError(f"{b} is not in codomain")
         # Case 2: Domain and codomain are types
         elif isclass(self.domain) and isclass(self.codomain):
-            if not isinstance(a, self.domain) or not isinstance(b, self.codomain):
-                raise ValueError
+            if not isinstance(a, self.domain):
+                raise ValueError(f"{a} not in domain")
+            if not isinstance(b, self.codomain):
+                raise ValueError(f"{b} not in codomain")
         # Case 3: Codomain is a type; domain is not
         elif not isclass(self.domain) and isclass(self.codomain):
-            if a not in self.domain or not isinstance(b, self.codomain):
-                raise ValueError
+            if a not in self.domain:
+                raise ValueError(f"{a} not in domain")
+            if not isinstance(b, self.codomain):
+                raise ValueError(f"{b} not in codomain")
         # Case 4: Neither domain nor codomain are types
         else:
-            if a not in self.domain or b not in self.codomain:
-                raise ValueError
+            if a not in self.domain:
+                raise ValueError(f"{a} not in domain")
+            if b not in self.codomain:
+                raise ValueError(f"{b} not in codomain")
         self.relation.add((a, b))
 
     def remove_pair(self, pair: tuple[Any, Any]) -> None:

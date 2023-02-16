@@ -295,9 +295,7 @@ def test_real_relation():
 
 
 def test_from_function():
-    r = BinaryRelation.from_function(
-        domain={1, 2, 3, 4}, codomain={1, 4, 9, 16}, function=lambda x: x**2
-    )
+    r = BinaryRelation.from_function(domain={1, 2, 3, 4}, func=lambda x: x**2)
 
     assert (4, 16) in r
     assert (5, 25) not in r

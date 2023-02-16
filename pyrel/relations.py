@@ -9,8 +9,8 @@ class BinaryRelation:
         domain: Set[Any] | Type | None = None,
         codomain: Set[Any] | Type | None = None,
         relation: Set[tuple[Any, Any]] | None = None,
-        from_function: bool = False,
-        function: Callable[[Any], Any] | None = None,
+        from_func: bool = False,
+        func: Callable[[Any], Any] | None = None,
     ) -> None:
         if domain is None:
             self._domain: Set[Any] | Type = set()
@@ -24,22 +24,19 @@ class BinaryRelation:
             self._relation = set()
         else:
             self._relation = relation
-        if from_function:
-            if domain is None or function is None:
+        if from_func:
+            if domain is None or func is None:
                 raise ValueError
-            self._function = function
-        self._from_function = from_function
+            self._func = func
+        self._from_func = from_func
 
     @classmethod
     def from_function(
         cls,
         domain: Set[Any] | Type,
-        codomain: Set[Any] | Type,
-        function: Callable[[Any], Any],
+        func: Callable[[Any], Any],
     ) -> Self:
-        return cls(
-            domain=domain, codomain=codomain, from_function=True, function=function
-        )
+        return cls(domain=domain, from_func=True, func=func)
 
     @property
     def domain(self) -> Set[Any] | Type:
@@ -54,9 +51,9 @@ class BinaryRelation:
         return self._relation
 
     def elements(self) -> tuple[Any, Any] | Generator:
-        if self._from_function:
+        if self._from_func:
             for x in self.domain:
-                yield (x, self._function(x))
+                yield (x, self._func(x))
         else:
             if self.relation:
                 for pair in self.relation:
@@ -303,11 +300,11 @@ class BinaryRelation:
         return False
 
     def __contains__(self, item: tuple[Any, Any]) -> bool:
-        if self._from_function:
+        if self._from_func:
             a, b = item
             if a not in self.domain:
                 return False
-            return b == self._function(a)
+            return b == self._func(a)
         return item in self._relation
 
     def __eq__(self, other_relation: object) -> bool:

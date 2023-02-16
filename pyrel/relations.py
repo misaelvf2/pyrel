@@ -33,9 +33,13 @@ class BinaryRelation:
     @classmethod
     def from_function(
         cls,
-        domain: Set[Any] | Type,
+        domain: Set[Any],
         func: Callable[[Any], Any],
     ) -> Self:
+        if isclass(domain):
+            raise ValueError(
+                "Can't use class-based domains when defining relation from function"
+            )
         return cls(domain=domain, from_func=True, func=func)
 
     @property

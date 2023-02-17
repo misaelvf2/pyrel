@@ -192,6 +192,8 @@ def test_compose():
     )
 
     expected = BinaryRelation(
+        domain=r1.domain.copy(),
+        codomain=r2.codomain.copy(),
         relation={(1, 0), (1, 1), (2, 1), (2, 2), (3, 0), (3, 1)},
     )
 
@@ -206,6 +208,8 @@ def test_inverse():
     )
 
     expected = BinaryRelation(
+        domain=r1.domain.copy(),
+        codomain=r1.codomain.copy(),
         relation={(1, 1), (4, 1), (3, 2), (1, 3), (4, 3)},
     )
 
@@ -220,6 +224,8 @@ def test_complement():
     )
 
     expected = BinaryRelation(
+        domain=r1.domain.copy(),
+        codomain=r1.codomain.copy(),
         relation={(1, 2), (1, 3), (2, 1), (2, 2), (3, 2), (3, 3)},
     )
 

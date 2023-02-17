@@ -114,13 +114,22 @@ class BinaryRelation:
         return True
 
     def is_irreflexive(self) -> bool:
-        raise NotImplementedError
+        for elem in self.domain:
+            if (elem, elem) in self.relation:
+                return False
+        return True
 
     def is_antisymmetric(self) -> bool:
-        raise NotImplementedError
+        for a, b in self.relation:
+            if (b, a) in self.relation and a != b:
+                return False
+        return True
 
     def is_asymmetric(self) -> bool:
-        raise NotImplementedError
+        for a, b in self.relation:
+            if (b, a) in self.relation:
+                return False
+        return True
 
     def is_connected(self) -> bool:
         raise NotImplementedError

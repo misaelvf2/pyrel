@@ -16,7 +16,7 @@ def test_reflexive():
         (4, 4),
     }
 
-    irreflexive_relation = {
+    not_reflexive_relation = {
         (1, 1),
         (1, 2),
         (2, 1),
@@ -27,10 +27,26 @@ def test_reflexive():
     }
 
     r1 = BinaryRelation(relation=reflexive_relation, domain=[1, 2, 3, 4])
-    r2 = BinaryRelation(relation=irreflexive_relation, domain=[1, 2, 3, 4])
+    r2 = BinaryRelation(relation=not_reflexive_relation, domain=[1, 2, 3, 4])
 
     assert r1.is_reflexive() is True
     assert r2.is_reflexive() is False
+
+
+def test_irreflexive():
+    r1 = BinaryRelation(
+        domain={1, 2, 3, 4},
+        codomain={1, 2, 3, 4},
+        relation={
+            (1, 2),
+            (1, 3),
+            (1, 4),
+            (2, 3),
+            (2, 4),
+        },
+    )
+
+    assert r1.is_irreflexive()
 
 
 def test_symmetric():
@@ -46,6 +62,61 @@ def test_symmetric():
 
     assert r1.is_symmetric() is True
     assert r2.is_symmetric() is False
+
+
+def test_antisymmetric():
+    r1 = BinaryRelation(
+        domain={1, 2, 3, 4},
+        codomain={1, 2, 3, 4},
+        relation={
+            (1, 1),
+            (1, 2),
+            (2, 3),
+            (3, 4),
+        },
+    )
+
+    r2 = BinaryRelation(
+        domain={1, 2, 3, 4},
+        codomain={1, 2, 3, 4},
+        relation={
+            (1, 1),
+            (1, 2),
+            (2, 3),
+            (3, 2),
+        },
+    )
+
+    assert r1.is_antisymmetric()
+    assert not r2.is_antisymmetric()
+
+
+def test_asymmetric():
+    r1 = BinaryRelation(
+        domain={1, 2, 3, 4},
+        codomain={1, 2, 3, 4},
+        relation={
+            (1, 2),
+            (1, 3),
+            (2, 4),
+            (3, 4),
+        },
+    )
+
+    r2 = BinaryRelation(
+        domain={1, 2, 3, 4},
+        codomain={1, 2, 3, 4},
+        relation={
+            (1, 2),
+            (1, 3),
+            (2, 4),
+            (3, 4),
+            (4, 4),
+        },
+    )
+
+    assert r1.is_asymmetric()
+    assert not r2.is_asymmetric()
 
 
 def test_transitive():

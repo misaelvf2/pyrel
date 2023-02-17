@@ -337,7 +337,7 @@ class BinaryRelation:
     def __len__(self) -> int:
         return len(self.relation)
 
-    def _unimplemented_operation(self, other_relation: Self | None = None) -> bool:
+    def _unimplemented_operation(self, other_relation: Optional[Self] = None) -> bool:
         if isclass(self.domain) or isclass(self.codomain):
             return True
         if other_relation is not None:

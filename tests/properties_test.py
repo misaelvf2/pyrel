@@ -169,6 +169,68 @@ def test_transitive():
     assert r5.is_transitive() is True
 
 
+def test_connected():
+    r1 = BinaryRelation(
+        domain={1, 2, 3, 4},
+        codomain={1, 2, 3, 4},
+        relation={
+            (1, 2),
+            (1, 4),
+            (3, 1),
+            (4, 2),
+            (2, 3),
+            (3, 4),
+        },
+    )
+
+    r2 = BinaryRelation(
+        domain={1, 2, 3, 4},
+        codomain={1, 2, 3, 4},
+        relation={
+            (1, 2),
+            (2, 3),
+            (3, 4),
+        },
+    )
+
+    assert r1.is_connected()
+    assert not r2.is_connected()
+
+
+def test_strongly_connected():
+    r1 = BinaryRelation(
+        domain={1, 2, 3, 4},
+        codomain={1, 2, 3, 4},
+        relation={
+            (1, 2),
+            (1, 1),
+            (2, 2),
+            (3, 3),
+            (3, 1),
+            (4, 4),
+            (2, 3),
+            (3, 4),
+            (4, 2),
+            (4, 1),
+        },
+    )
+
+    r2 = BinaryRelation(
+        domain={1, 2, 3, 4},
+        codomain={1, 2, 3, 4},
+        relation={
+            (1, 2),
+            (1, 4),
+            (3, 1),
+            (4, 2),
+            (2, 3),
+            (3, 4),
+        },
+    )
+    assert r1.is_strongly_connected()
+    assert not r2.is_strongly_connected()
+
+
 def test_union():
     r1 = BinaryRelation(
         domain={1, 2, 3}, codomain={1, 2, 3, 4}, relation={(1, 1), (2, 2), (3, 3)}

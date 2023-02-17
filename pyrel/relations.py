@@ -132,10 +132,23 @@ class BinaryRelation:
         return True
 
     def is_connected(self) -> bool:
-        raise NotImplementedError
+        if isclass(self.domain):
+            raise ValueError("Operation not implemented for class-based domains")
+        if isinstance(self.domain, set):
+            for a, b in itertools.product(self.domain, self.domain):
+                if a != b:
+                    if (a, b) not in self.relation and (b, a) not in self.relation:
+                        return False
+        return True
 
     def is_strongly_connected(self) -> bool:
-        raise NotImplementedError
+        if isclass(self.domain):
+            raise ValueError("Operation not implemented for class-based domains")
+        if isinstance(self.domain, set):
+            for a, b in itertools.product(self.domain, self.domain):
+                if (a, b) not in self.relation and (b, a) not in self.relation:
+                    return False
+        return True
 
     def is_well_founded(self) -> bool:
         raise NotImplementedError

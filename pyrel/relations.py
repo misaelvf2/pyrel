@@ -1,21 +1,18 @@
 import itertools
 from inspect import isclass
-from typing import Any, Callable, Generator, Self, Set, Type
+from typing import Any, Callable, Generator, Optional, Self, Set, Type
 
 
 class BinaryRelation:
     def __init__(
         self,
-        domain: Set[Any] | Type | None = None,
-        codomain: Set[Any] | Type | None = None,
-        relation: Set[tuple[Any, Any]] | None = None,
+        domain: Set[Any] | Type,
+        codomain: Optional[Set[Any] | Type] = None,
+        relation: Optional[Set[tuple[Any, Any]]] = None,
         from_func: bool = False,
-        func: Callable[[Any], Any] | None = None,
+        func: Optional[Callable[[Any], Any]] = None,
     ) -> None:
-        if domain is None:
-            self._domain: Set[Any] | Type = set()
-        else:
-            self._domain = domain
+        self._domain = domain
         if codomain is None:
             self._codomain: Set[Any] | Type = set()
         else:

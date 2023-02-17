@@ -319,7 +319,13 @@ class BinaryRelation:
     def __eq__(self, other_relation: object) -> bool:
         if not isinstance(other_relation, self.__class__):
             raise NotImplementedError
-        return self.relation == other_relation.relation
+        if (
+            self.domain != other_relation.domain
+            or self.codomain != other_relation.codomain
+            or self.relation != other_relation.relation
+        ):
+            return False
+        return True
 
     def __repr__(self) -> str:
         return f"BinaryRelation(domain={self.domain}, codomain={self.codomain}, \

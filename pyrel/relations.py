@@ -1,20 +1,20 @@
 import itertools
-from inspect import isclass
-from typing import Any, Callable, Generator, Optional, Self, Set, Type
+from subprocess import call
+from typing import Any, Callable, Generator, Optional, Self, Set
 
 
 class BinaryRelation:
     def __init__(
         self,
-        domain: Set[Any] | Type,
-        codomain: Optional[Set[Any] | Type] = None,
+        domain: Set[Any] | Callable[[Any], bool],
+        codomain: Optional[Set[Any] | Callable[[Any], bool]] = None,
         relation: Optional[Set[tuple[Any, Any]]] = None,
         from_func: bool = False,
         func: Optional[Callable[[Any], Any]] = None,
     ) -> None:
         self._domain = domain
         if codomain is None:
-            self._codomain: Set[Any] | Type = set()
+            self._codomain: Set[Any] | Callable[[Any], bool] = set()
         else:
             self._codomain = codomain
         if relation is None:
@@ -30,21 +30,17 @@ class BinaryRelation:
     @classmethod
     def from_function(
         cls,
-        domain: Set[Any],
+        domain: Set[Any] | Callable[[Any], bool],
         func: Callable[[Any], Any],
     ) -> Self:
-        if isclass(domain):
-            raise ValueError(
-                "Can't use class-based domains when defining relation from function"
-            )
         return cls(domain=domain, from_func=True, func=func)
 
     @property
-    def domain(self) -> Set[Any] | Type:
+    def domain(self) -> Set[Any] | Callable[[Any], bool]:
         return self._domain
 
     @property
-    def codomain(self) -> Set[Any] | Type:
+    def codomain(self) -> Set[Any] | Callable[[Any], bool]:
         return self._codomain
 
     @property
@@ -53,37 +49,43 @@ class BinaryRelation:
 
     def elements(self) -> tuple[Any, Any] | Generator:
         if self._from_func:
+            if callable(self.domain):
+                raise ValueError(
+                    "Operation not implemented for function-based domains."
+                )
             for x in self.domain:
                 yield (x, self._func(x))
         else:
-            if self.relation:
+            if self.relation is not None:
                 for pair in self.relation:
                     yield pair
 
     def add_pair(self, pair: tuple[Any, Any]) -> None:
         a, b = pair
-        # Case 1: Domain is a type; codomain is not
-        if isclass(self.domain) and not isclass(self.codomain):
-            if not isinstance(a, self.domain):
-                raise ValueError(f"{a} is not domain")
+        # Case 1: Domain is a function; codomain is not
+        if callable(self.domain) and not callable(self.codomain):
+            if not self.domain(a):
+                raise ValueError(f"{a} is not in domain")
             if b not in self.codomain:
                 raise ValueError(f"{b} is not in codomain")
-        # Case 2: Domain and codomain are types
-        elif isclass(self.domain) and isclass(self.codomain):
-            if not isinstance(a, self.domain):
+        # Case 2: Domain and codomain are functions
+        elif callable(self.domain) and callable(self.codomain):
+            if not self.domain(a):
                 raise ValueError(f"{a} not in domain")
-            if not isinstance(b, self.codomain):
+            if not self.codomain(b):
                 raise ValueError(f"{b} not in codomain")
-        # Case 3: Codomain is a type; domain is not
-        elif not isclass(self.domain) and isclass(self.codomain):
+        # Case 3: Codomain is a function; domain is not
+        elif not callable(self.domain) and callable(self.codomain):
             if a not in self.domain:
                 raise ValueError(f"{a} not in domain")
-            if not isinstance(b, self.codomain):
+            if not self.codomain(b):
                 raise ValueError(f"{b} not in codomain")
-        # Case 4: Neither domain nor codomain are types
+        # Case 4: Neither domain nor codomain are functions
         else:
+            assert isinstance(self.domain, set)
             if a not in self.domain:
                 raise ValueError(f"{a} not in domain")
+            assert isinstance(self.codomain, set)
             if b not in self.codomain:
                 raise ValueError(f"{b} not in codomain")
         self.relation.add((a, b))
@@ -94,6 +96,8 @@ class BinaryRelation:
         self.relation.remove(pair)
 
     def is_reflexive(self) -> bool:
+        if callable(self.domain):
+            raise ValueError("Operation not implemented for function-based domains.")
         for elem in self.domain:
             if (elem, elem) not in self.relation:
                 return False
@@ -114,6 +118,8 @@ class BinaryRelation:
         return True
 
     def is_irreflexive(self) -> bool:
+        if callable(self.domain):
+            raise ValueError("Operation not implemented for function-based domains.")
         for elem in self.domain:
             if (elem, elem) in self.relation:
                 return False
@@ -132,22 +138,20 @@ class BinaryRelation:
         return True
 
     def is_connected(self) -> bool:
-        if isclass(self.domain):
-            raise ValueError("Operation not implemented for class-based domains")
-        if isinstance(self.domain, set):
-            for a, b in itertools.product(self.domain, self.domain):
-                if a != b:
-                    if (a, b) not in self.relation and (b, a) not in self.relation:
-                        return False
+        if callable(self.domain):
+            raise ValueError("Operation not implemented for function-based domains")
+        for a, b in itertools.product(self.domain, self.domain):
+            if a != b:
+                if (a, b) not in self.relation and (b, a) not in self.relation:
+                    return False
         return True
 
     def is_strongly_connected(self) -> bool:
-        if isclass(self.domain):
-            raise ValueError("Operation not implemented for class-based domains")
-        if isinstance(self.domain, set):
-            for a, b in itertools.product(self.domain, self.domain):
-                if (a, b) not in self.relation and (b, a) not in self.relation:
-                    return False
+        if callable(self.domain):
+            raise ValueError("Operation not implemented for function-based domains")
+        for a, b in itertools.product(self.domain, self.domain):
+            if (a, b) not in self.relation and (b, a) not in self.relation:
+                return False
         return True
 
     def is_well_founded(self) -> bool:
@@ -207,8 +211,10 @@ class BinaryRelation:
     def update(self, other_relation: Self) -> Self:
         if self._unimplemented_operation(other_relation):
             raise ValueError(
-                "Operation not implemented for class-based domains and codomains"
+                "Operation not implemented for function-based domains and codomains"
             )
+        assert isinstance(self.domain, set)
+        assert isinstance(self.codomain, set)
         if isinstance(other_relation.domain, set):
             self.domain.update(other_relation.domain)
         if isinstance(other_relation.codomain, set):
@@ -219,7 +225,7 @@ class BinaryRelation:
     def union(self, other_relation: Self) -> Self:
         if self._unimplemented_operation(other_relation):
             raise ValueError(
-                "Operation not implemented for class-based domains and codomains"
+                "Operation not implemented for function-based domains and codomains"
             )
         result_domain = self._merge_domains(other_relation)
         result_codomain = self._merge_codomains(other_relation)
@@ -232,7 +238,7 @@ class BinaryRelation:
     def intersection(self, other_relation: Self) -> Self:
         if self._unimplemented_operation(other_relation):
             raise ValueError(
-                "Operation not implemented for class-based domains and codomains"
+                "Operation not implemented for function-based domains and codomains"
             )
         result_domain = self._merge_domains(other_relation)
         result_codomain = self._merge_codomains(other_relation)
@@ -245,7 +251,7 @@ class BinaryRelation:
     def difference(self, other_relation: Self) -> Self:
         if self._unimplemented_operation(other_relation):
             raise ValueError(
-                "Operation not implemented for class-based domains and codomains"
+                "Operation not implemented for function-based domains and codomains"
             )
         result_domain = self._merge_domains(other_relation)
         result_codomain = self._merge_codomains(other_relation)
@@ -258,7 +264,7 @@ class BinaryRelation:
     def symmetric_difference(self, other_relation: Self) -> Self:
         if self._unimplemented_operation(other_relation):
             raise ValueError(
-                "Operation not implemented for class-based domains and codomains"
+                "Operation not implemented for function-based domains and codomains"
             )
         result_domain = self._merge_domains(other_relation)
         result_codomain = self._merge_codomains(other_relation)
@@ -271,7 +277,7 @@ class BinaryRelation:
     def compose(self, other_relation: Self) -> Self:
         if self._unimplemented_operation(other_relation):
             raise ValueError(
-                "Operation not implemented for class-based domains and codomains"
+                "Operation not implemented for function-based domains and codomains"
             )
         if self.codomain != other_relation.domain:
             raise ValueError(
@@ -283,6 +289,8 @@ class BinaryRelation:
             for c, d in other_relation.relation:
                 if b == c:
                     result_relation.add((a, d))
+        assert isinstance(self.domain, set)
+        assert isinstance(other_relation.codomain, set)
         return self.__class__(
             domain=self.domain.copy(),
             codomain=other_relation.codomain.copy(),
@@ -294,8 +302,8 @@ class BinaryRelation:
         for a, b in self.relation:
             result_relation.add((b, a))
         return self.__class__(
-            domain=self.domain.copy(),
-            codomain=self.codomain.copy(),
+            domain=self.domain if callable(self.domain) else self.domain.copy(),
+            codomain=self.codomain if callable(self.codomain) else self.codomain.copy(),
             relation=result_relation,
         )
 
@@ -304,7 +312,7 @@ class BinaryRelation:
             result_relation = set(itertools.product(self.domain, self.codomain))
         else:
             raise ValueError(
-                "Operation not implemented for class-based domains and codomains"
+                "Operation not implemented for function-based domains and codomains"
             )
         result_relation -= self._relation
         return self.__class__(
@@ -333,8 +341,12 @@ class BinaryRelation:
     def __contains__(self, item: tuple[Any, Any]) -> bool:
         if self._from_func:
             a, b = item
-            if a not in self.domain:
-                return False
+            if callable(self.domain):
+                if not self.domain(a):
+                    return False
+            else:
+                if a not in self.domain:
+                    return False
             return b == self._func(a)
         return item in self._relation
 
@@ -360,21 +372,23 @@ class BinaryRelation:
         return len(self.relation)
 
     def _unimplemented_operation(self, other_relation: Optional[Self] = None) -> bool:
-        if isclass(self.domain) or isclass(self.codomain):
+        if callable(self.domain) or callable(self.codomain):
             return True
         if other_relation is not None:
-            if isclass(other_relation.domain) or isclass(other_relation.codomain):
+            if callable(other_relation.domain) or callable(other_relation.codomain):
                 return True
         return False
 
     def _merge_domains(self, other_relation) -> set:
+        if callable(self.domain) or callable(other_relation.domain):
+            raise ValueError("Operation not implemented for function-based domains.")
         result_domain = self.domain.copy()
-        if isinstance(other_relation.domain, set):
-            result_domain.update(other_relation.domain)
+        result_domain.update(other_relation.domain)
         return result_domain
 
     def _merge_codomains(self, other_relation) -> set:
+        if callable(self.codomain) or callable(other_relation.codomain):
+            raise ValueError("Operation not implemented for function-based codomains.")
         result_codomain = self.codomain.copy()
-        if isinstance(other_relation.codomain, set):
-            result_codomain.update(other_relation.codomain)
+        result_codomain.update(other_relation.codomain)
         return result_codomain

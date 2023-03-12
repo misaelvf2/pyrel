@@ -409,7 +409,7 @@ def test_isdisjoint():
 
 
 def test_real_domain():
-    r = BinaryRelation(domain=numbers.Real, codomain={1, 2, 3})
+    r = BinaryRelation(domain=lambda x: isinstance(x, numbers.Real), codomain={1, 2, 3})
 
     with pytest.raises(ValueError):
         r.add_pair((5j, 1))
@@ -420,7 +420,10 @@ def test_real_domain():
 
 
 def test_real_relation():
-    r = BinaryRelation(domain=numbers.Real, codomain=numbers.Real)
+    r = BinaryRelation(
+        domain=lambda x: isinstance(x, numbers.Real),
+        codomain=lambda x: isinstance(x, numbers.Real),
+    )
 
     with pytest.raises(ValueError):
         r.add_pair((10, 1j))
